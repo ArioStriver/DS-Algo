@@ -67,7 +67,7 @@ METHOD 3:
 		It will give two equations 
 		x-y = S – (1) 
 		x^2 – y^2 = Sum_sq 
-		x+ y = (Sum_sq/S) – (2) 
+		x + y = (Sum_sq/S) – (2) 
 
 TIME: O(N)
 
@@ -157,7 +157,7 @@ class Solve {
         }
         
         /* s5: now we need to find the missing and repeating number
-        for that we again divide the elements form (1 - n) into 
+        for that we again divide the elements from (1 - n) into 
         two sets and then prerform the XOR operation*/
         for(int i = 1; i <= n; i++){
             
