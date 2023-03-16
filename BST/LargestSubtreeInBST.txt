@@ -1,0 +1,127 @@
+/*
+Given a binary tree. Find the size of its largest subtree that is a Binary Search Tree.
+Note: Here Size is equal to the number of nodes in the subtree.
+
+Example 1:
+
+Input:
+        1
+      /   \
+     4     4
+   /   \
+  6     8
+
+Output: 1
+
+Explanation: There's no sub-tree with size greater than 1 which forms a BST. All the leaf Nodes are the BSTs with size equal to 1.
+
+Example 2:
+
+Input: 6 6 3 N 2 9 3 N 8 8 2
+            6
+        /       \
+       6         3
+        \      /   \
+         2    9     3
+          \  /  \
+          8 8    2 
+
+Output: 2
+
+Explanation: The following sub-tree is a BST of size 2: 
+       2 
+    /     \ 
+   N       8
+
+
+METHOD 1:(BRUTE FORCE)
+	APPROACH: For each subtree check whether it is a valid BST or not and if it is a valid BST then calculate the no. of nodes in that subtree and return the largest one.
+
+TIME: O(N^2).
+
+SPACE: O(1), excluding the recusive stack space.
+
+
+METHOD 2: (USING POST-ORDER TRAVERSAL)
+
+TIME: O(N), where N is the total no. of elements.
+
+SPACE: O(1), excluding the recusive stack space.
+*/
+
+class NodeValue {
+    public int minNode, maxNode, maxSize;
+    
+    NodeValue(int minNode, int maxNode, int maxSize) {
+        this.minNode = minNode;
+        this.maxNode = maxNode;
+        this.maxSize = maxSize;
+    }
+}
+
+class Solution{
+    
+    private static NodeValue largestBSTSubtreeHelper(Node root) {
+
+        // an empty tree in a BSt of size 0
+        if(root == null) {
+            return new NodeValue(Integer.MAX_VALUE, Integer.MIN_VALUE, 0);
+        }
+        
+        // get the values from the left and right subtree of current tree
+        NodeValue left = largestBSTSubtreeHelper(root.left);
+        NodeValue right = largestBSTSubtreeHelper(root.right);
+        
+        // checking whether the current subtree is BST or not
+        // Current node is greater than max in left AND smaller than min in right, it is a BST.
+        if(left.maxNode < root.data && root.data < right.minNode) {
+            // It is a BST.
+            return new NodeValue(Math.min(root.data, left.minNode), Math.max(root.data, right.maxNode), 1+left.maxSize+right.maxSize);
+        }
+        
+        // not BST, return [-inf, inf] so that parent can't be valid BST
+        return new NodeValue(Integer.MIN_VALUE, Integer.MAX_VALUE, Math.max(left.maxSize, right.maxSize));
+    }
+    
+    static int largestBst(Node root)
+    {
+        return largestBSTSubtreeHelper(root).maxSize;
+    }
+}
+
+
+/*WITHOUT USING ANOTHER CLASS & CONSTRUCTOR */
+
+class Solution{
+    
+    // INDEX 0 -> Min Node Value
+    // INDEX 1 -> Max Node Value
+    // INDEX 2 -> Max Subtree Size
+    
+    private static int[] largestBSTSubtreeHelper(Node root) {
+
+        // an empty tree in a BSt of size 0
+        if(root == null) {
+            return new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+        }
+        
+        // get the values from the left and right subtree of current tree
+        int[] left = largestBSTSubtreeHelper(root.left);
+        int[] right = largestBSTSubtreeHelper(root.right);
+        
+        // checking whether the current subtree is BST or not
+        // Current node is greater than max in left AND smaller than min in right, it is a BST.
+        if(left[1] < root.data && root.data < right[0]) {
+            // It is a BST.
+            return new int[]{Math.min(root.data, left[0]), Math.max(root.data, right[1]), 1+left[2]+right[2]};
+        }
+        
+        // not BST, return [-inf, inf] so that parent can't be valid BST
+        return new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE, Math.max(left[2], right[2])};
+    }
+    
+    static int largestBst(Node root)
+    {
+        return largestBSTSubtreeHelper(root)[2];
+    }
+}
